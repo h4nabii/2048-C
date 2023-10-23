@@ -11,6 +11,69 @@
 void createFileStructures(); // 添加资源保存文件夹
 void saveScore(int score);   // 保存分数
 void loadScore();            // 读取分数
+int readHightScore();
+
+int readHighestScore()
+{
+    int highestScore = 0;
+    int *pHighestScore = &highestScore;
+
+    FILE *scoreFile;
+
+    int counter;            // 测试数据数量时读取数据的储存变量
+    int quantityOfData = 0; // 数据数量
+
+    if (fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r"))
+    {
+        printf("Error: Unable to read score file");
+        return -1;
+    }
+
+    // file end with 0000
+    fscanf_s(scoreFile, "%d", &counter);
+    while (counter != 0) // 计数据数量
+    {
+        for (int i = 0; i < 6; i++)
+            fscanf_s(scoreFile, "%d", &counter);
+
+        quantityOfData++;
+        fscanf_s(scoreFile, "%d", &counter);
+    }
+    
+    fclose(scoreFile);
+
+    if (quantityOfData != 0) // 若有数据
+    {
+
+        int *scoreData = (int *)malloc(7 * quantityOfData * sizeof(int));
+
+        if (fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r"))
+        {
+            printf("Error: Unable to read score file");
+            return -1;
+        }
+        for (int i = 0; i < quantityOfData; i++) // 读取数据
+        {
+            fscanf_s(scoreFile, "%d", scoreData + 7 * i);
+
+            if (scoreData + 7 * i != 0)
+                for (int j = 1; j < 7; j++)
+                    fscanf_s(scoreFile, "%d", scoreData + (7 * i + j));
+        }
+
+        fclose(scoreFile);
+
+        for (int i = 0; i < quantityOfData; i++)
+            if (highestScore < *(scoreData + 7 * i))
+                highestScore = *(scoreData + 7 * i);
+    }
+    else // 若无数据
+    {
+        highestScore = 0;
+    }
+
+    return highestScore;
+}
 
 // 保存相关函数声明
 void fileInit()

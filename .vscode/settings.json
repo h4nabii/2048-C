@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.art": "html",
+        "screen.h": "c"
+    }
+}

@@ -4,6 +4,8 @@
     MainPart.h
 */
 
+#include "global.h"
+
 #include "screen.h"
 #include "input.h"
 
@@ -19,22 +21,19 @@ void runHome()
 {
     int command;
 
-    int score = 0;
-
-    int isTest = 0;
     int stillPlay;
 
     do
     {
-        showHome(isTest);
+        showHome();
         command = waitDigitKeyDown(0, 2);
 
         if (command == MAIN_GAME)
         {
             do
             {
-                game2048(&score, isTest);
-                printEnd();
+                game2048();
+                showGameOver();
                 stillPlay = waitDigitKeyDown(0, 1);
             } while (stillPlay);
         }
@@ -58,7 +57,7 @@ void runHome()
                         settingGreeting();
                         settingChoice = waitDigitKeyDown(0, 1);
                         if (settingChoice == 1)
-                            isTest = toMakeSureColorTest();
+                            testMode = toMakeSureColorTest();
                     } while (settingChoice);
                 }
             } while (menuChoice);

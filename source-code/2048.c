@@ -8,13 +8,13 @@
 #include <direct.h>
 
 #include "input.h"
+#include "screen.h"
 
 #include "ScoSavLoad.h"
 #include "GamePart.h"
 #include "Setting.h"
 #include "MainPart.h"
 
-#include "screen.h"
 
 // Initial the program
 void init()
