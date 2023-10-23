@@ -1,17 +1,29 @@
-/*
-	GAME2048
-	version 4
-	Setting.h
-*/
+#pragma once
+#include <windows.h>
+#include <stdio.h>
 
-//设置相关函数
-void settingGreeting();										//打印设置界面
-int toMakeSureColorTest();										//询问是否打开测试模式
+// initial screen
+void screenInit() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-//******************************************************************************************
+    // Set window size (useless when using Windows Terminal)
+    system("mode con cols=45 lines=25");
+    
+    SetConsoleTitleA("2048");
+    
+    SetConsoleTextAttribute(
+        hOut,
+        BACKGROUND_BLUE |
+            BACKGROUND_GREEN |
+            BACKGROUND_RED |
+            BACKGROUND_INTENSITY);
+    
+    system("cls");
+}
 
-//打印设置界面
-void settingGreeting() {
+// show greeting screen
+void showHome(int ifColorTest)
+{
 	system("cls");
 	printf("                                          \n");
 	printf("|****************************************|\n");
@@ -19,10 +31,13 @@ void settingGreeting() {
 	printf("|                                        |\n");
 	printf("|               游戏：2048               |\n");
 	printf("|                                        |\n");
-	printf("|               1：颜色测试模式          |\n");
+
+	printf(ifColorTest == 1 ? "|         1：开始(颜色测试模式)          |\n" : "|                1：开始                 |\n");
+
 	printf("|                                        |\n");
-	printf("|               0：退出                  |\n");
+	printf("|                2：菜单                 |\n");
 	printf("|                                        |\n");
+	printf("|                0：退出                 |\n");
 	printf("|                                        |\n");
 	printf("|                                        |\n");
 	printf("|                                        |\n");
@@ -36,9 +51,9 @@ void settingGreeting() {
 	printf("|****************************************|\n\n");
 }
 
-//询问是否打开测试模式
-int toMakeSureColorTest() {
-	int Choice;
+// show menu screen
+void showMenu()
+{
 	system("cls");
 	printf("                                          \n");
 	printf("|****************************************|\n");
@@ -46,10 +61,11 @@ int toMakeSureColorTest() {
 	printf("|                                        |\n");
 	printf("|               游戏：2048               |\n");
 	printf("|                                        |\n");
-	printf("|           确认打开颜色测试？           |\n");
+	printf("|               1：分数记录              |\n");
 	printf("|                                        |\n");
-	printf("|           1：是        0：否           |\n");
+	printf("|               2：设置                  |\n");
 	printf("|                                        |\n");
+	printf("|               0：退出                  |\n");
 	printf("|                                        |\n");
 	printf("|                                        |\n");
 	printf("|                                        |\n");
@@ -61,6 +77,4 @@ int toMakeSureColorTest() {
 	printf("|                                        |\n");
 	printf("|                                        |\n");
 	printf("|****************************************|\n\n");
-	Choice = waitDigitKeyDown(0, 1);
-	return Choice;
 }

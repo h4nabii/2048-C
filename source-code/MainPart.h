@@ -1,92 +1,67 @@
 /*
-	GAME2048
-	version 4
-	MainPart.h
+    GAME2048
+    version 4
+    MainPart.h
 */
 
-//主页相关函数声明
-void printGreeting(int ifColorTest);						//打印欢迎界面
-void menuGreeting();										//打印菜单界面
-int getNumberChoice(int start, int end);					//获取数字选择
+#include "screen.h"
+#include "input.h"
 
-//******************************************************************************************
+#define QUIT 0
 
-//打印欢迎界面
-void printGreeting(int ifColorTest)
+#define MAIN_GAME 1
+#define MAIN_MENU 2
+
+#define MENU_LOAD       1
+#define MENU_SETTING    2
+
+void runHome()
 {
-	system("cls");
-	printf("                                          \n");
-	printf("|****************************************|\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|               游戏：2048               |\n");
-	printf("|                                        |\n");
+    int command;
 
-	printf(ifColorTest == 1 ? "|         1：开始(颜色测试模式)          |\n" : "|                1：开始                 |\n");
+    int score = 0;
 
-	printf("|                                        |\n");
-	printf("|                2：菜单                 |\n");
-	printf("|                                        |\n");
-	printf("|                0：退出                 |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|****************************************|\n\n");
-}
+    int isTest = 0;
+    int stillPlay;
 
-// 获取数字选择
-int getNumberChoice(int start, int end)
-{
-	int ans;
-	int wrong;
-	do
-	{
-		ans = _getch();
-		if (((ans - 48) >= start) && ((ans - 48) <= end))
-		{
-			wrong = 0;
-			return ans - 48;
-		}
-		else
-		{
-			wrong = 1;
-		}
-	}
-	while (wrong == 1);
-	return 0;
-}
+    do
+    {
+        showHome(isTest);
+        command = waitDigitKeyDown(0, 2);
 
-//打印菜单界面
-void menuGreeting()
-{
-	system("cls");
-	printf("                                          \n");
-	printf("|****************************************|\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|               游戏：2048               |\n");
-	printf("|                                        |\n");
-	printf("|               1：分数记录              |\n");
-	printf("|                                        |\n");
-	printf("|               2：设置                  |\n");
-	printf("|                                        |\n");
-	printf("|               0：退出                  |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|                                        |\n");
-	printf("|****************************************|\n\n");
+        if (command == MAIN_GAME)
+        {
+            do
+            {
+                game2048(&score, isTest);
+                printEnd();
+                stillPlay = waitDigitKeyDown(0, 1);
+            } while (stillPlay);
+        }
+        else if (command == MAIN_MENU)
+        {
+            int menuChoice;
+            do
+            {
+                showMenu();
+                menuChoice = waitDigitKeyDown(0, 2);
+
+                if (menuChoice == MENU_LOAD)
+                {
+                    loadScore();
+                }
+                else if (menuChoice == MENU_SETTING)
+                {
+                    int settingChoice;
+                    do
+                    {
+                        settingGreeting();
+                        settingChoice = waitDigitKeyDown(0, 1);
+                        if (settingChoice == 1)
+                            isTest = toMakeSureColorTest();
+                    } while (settingChoice);
+                }
+            } while (menuChoice);
+        }
+    } while (command);
 }

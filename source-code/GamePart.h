@@ -4,6 +4,10 @@
 	GamePart.h
 */
 
+#include <math.h>
+#include <windows.h>
+#include <stdio.h>
+
 //游戏相关函数声明
 void game2048(int * score, int ifTest);											//游戏主函数
 int getCommand();																//获取游戏指令
@@ -445,7 +449,7 @@ void game2048(int * score, int ifTest)
 			printf("|                                        |\n");
 			printf("|                                        |\n");
 			printf("|****************************************|\n\n");
-			surequit = getNumberChoice(0,1);
+			surequit = waitDigitKeyDown(0,1);
 			
 			if (surequit == 1)
 			{
