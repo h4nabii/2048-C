@@ -7,13 +7,10 @@
 #include <time.h>
 #include <direct.h>
 
-#include "input.h"
-#include "screen.h"
+#include "public/screen.h"
+#include "public/data.h"
 
-#include "ScoSavLoad.h"
-#include "GamePart.h"
-#include "Setting.h"
-#include "MainPart.h"
+#include "main.h"
 
 
 // Initial the program

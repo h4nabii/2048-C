@@ -4,20 +4,21 @@
     ScoSavLoad.h
 */
 
+#pragma once
 #include <windows.h>
 #include <math.h>
 #include <stdio.h>
 
+// TODO: remove input and screen related code.
+#include "input.h"
+
 void createFileStructures(); // 添加资源保存文件夹
 void saveScore(int score);   // 保存分数
 void loadScore();            // 读取分数
-int readHightScore();
+int readHighestScore();
 
 int readHighestScore()
 {
-    int highestScore = 0;
-    int *pHighestScore = &highestScore;
-
     FILE *scoreFile;
 
     int counter;            // 测试数据数量时读取数据的储存变量
@@ -39,8 +40,10 @@ int readHighestScore()
         quantityOfData++;
         fscanf_s(scoreFile, "%d", &counter);
     }
-    
+
     fclose(scoreFile);
+
+    int highestScore = 0;
 
     if (quantityOfData != 0) // 若有数据
     {
@@ -230,28 +233,7 @@ void loadScore()
 
     else
     { // 若无数据
-        system("cls");
-        printf("                                          \n");
-        printf("|****************************************|\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|               游戏：2048               |\n");
-        printf("|                                        |\n");
-        printf("|             你还未玩过游戏呢           |\n");
-        printf("|                                        |\n");
-        printf("|             快去玩几把吧               |\n");
-        printf("|                                        |\n");
-        printf("|               0：我知道了              |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|                                        |\n");
-        printf("|****************************************|\n\n");
+        showNoData();
         choice = waitDigitKeyDown(0, 0);
     }
 }

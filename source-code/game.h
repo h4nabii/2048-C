@@ -8,7 +8,10 @@
 #include <windows.h>
 #include <stdio.h>
 
-#include "global.h"
+#include "public/global.h"
+#include "public/screen.h"
+#include "public/input.h"
+#include "public/data.h"
 
 #define MOVE_UP 1
 #define MOVE_LEFT 2

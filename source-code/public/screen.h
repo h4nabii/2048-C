@@ -131,6 +131,32 @@ void showQuitCheck()
     printf("|****************************************|\n\n");
 }
 
+void showNoData()
+{
+    system("cls");
+    printf("                                          \n");
+    printf("|****************************************|\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|               游戏：2048               |\n");
+    printf("|                                        |\n");
+    printf("|             你还未玩过游戏呢           |\n");
+    printf("|                                        |\n");
+    printf("|             快去玩几轮吧               |\n");
+    printf("|                                        |\n");
+    printf("|               0：我知道了              |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|                                        |\n");
+    printf("|****************************************|\n\n");
+}
+
 WORD getColorOf(int number)
 {
     if (number <= 0 || number > 4096)

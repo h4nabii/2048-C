@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "*.art": "html",
-        "screen.h": "c"
+        "input.h": "c",
+        "mainpart.h": "c",
+        "gamepart.h": "c",
+        "menu.h": "c",
+        "screen.h": "c",
+        "main.h": "c",
+        "game.h": "c",
+        "settings.h": "c"
     }
 }
