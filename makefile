@@ -1,6 +1,10 @@
 SRC = source-code
+OUT = dist
 MAIN = 2048
-OUTPUT_CHARSET = GBK
+OUT_CHARSET = GBK
 
-make: $(SRC)/$(MAIN).c
-	gcc $(SRC)/$(MAIN).c -o $(MAIN) -fexec-charset=$(OUTPUT_CHARSET)
+make: $(SRC)/$(MAIN).c $(OUT)
+	gcc $(SRC)/$(MAIN).c -o $(OUT)/$(MAIN) -fexec-charset=$(OUT_CHARSET)
+
+$(OUT):
+	mkdir $(OUT)
