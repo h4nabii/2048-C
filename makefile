@@ -13,12 +13,14 @@ CHARSET     = -finput-charset=UTF-8
 
 SRC_FILE    = $(SRC)/$(MAIN).c
 RENDER_FILE = $(SRC)/render/render.c
+# 代码几乎都在头文件里，头文件必须作为依赖，否则改了不会被重编
+SRC_HEADERS = $(wildcard $(SRC)/*.h) $(wildcard $(SRC)/public/*.h) $(wildcard $(SRC)/render/*.h)
 OUT_FILE    = $(OUT)/$(MAIN).exe
 
 # ===== 目标 =====
 all: $(OUT_FILE)
 
-$(OUT_FILE): $(SRC_FILE) $(RENDER_FILE) | $(OUT)
+$(OUT_FILE): $(SRC_FILE) $(RENDER_FILE) $(SRC_HEADERS) | $(OUT)
 	$(CC) $(CFLAGS) $(INCLUDES) $(CHARSET) $(SRC_FILE) $(RENDER_FILE) -o $(OUT_FILE)
 
 $(OUT):
