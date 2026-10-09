@@ -140,6 +140,13 @@ static WORD getColorOf(int number) {
   return colors[number];
 }
 
+// 颜色只在内容写进控制台那一刻生效，而整帧缓冲会把写入推迟到 fflush：
+// 改属性前必须先刷出缓冲区，否则整帧都会用最后一次设置的属性画出来。
+static void setColor(HANDLE hOut, WORD color) {
+  fflush(stdout);
+  SetConsoleTextAttribute(hOut, color);
+}
+
 void printBlocks(int numbers[][4], int score, int highestScore) {
   HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
   clearConsole();
@@ -147,12 +154,12 @@ void printBlocks(int numbers[][4], int score, int highestScore) {
   for (int j = 0; j < 4; j++) {
     for (int i = 0; i < 4; i++) {
       printf("|");
-      SetConsoleTextAttribute(hOut, getColorOf(numbers[i][j]));
+      setColor(hOut, getColorOf(numbers[i][j]));
       if (numbers[i][j] == 0)
         printf("      ");
       else
         printf(" %-5d", numbers[i][j]);
-      SetConsoleTextAttribute(hOut, BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY);
+      setColor(hOut, BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY);
     }
 
     if (j == 0)
