@@ -11,6 +11,7 @@
 
 // TODO: remove input and screen related code.
 #include "input.h"
+#include "render/render.h"
 #include "storage_path.h"
 
 void createFileStructures(); // 添加资源保存文件夹
@@ -172,23 +173,7 @@ void loadScore() {
           else
             printedNumbers[i][j] = 0;
 
-      system("cls");
-
-      printf("                                          \n"); // 打印页面
-      printf("|****************************************|\n");
-      for (int i = 0; i < 15; i++)
-        if (printedNumbers[i][0] != 0) {
-          printf("| %-8d %-4d.%-2d.%-2d   %-2d:%-2d:%-2d         |\n", printedNumbers[i][0], printedNumbers[i][1],
-                 printedNumbers[i][2], printedNumbers[i][3], printedNumbers[i][4], printedNumbers[i][5],
-                 printedNumbers[i][6]);
-        } else {
-          printf("|                                        |\n");
-        }
-
-      printf("|                                        |\n");
-      printf("|                               %3d/%-3d  |\n", currentPage, page);
-      printf("| 1:上一页 2:下一页 0:退出               |\n");
-      printf("|****************************************|\n\n");
+      renderScoreTable(printedNumbers, page, currentPage);
 
       choice = waitDigitKeyDown(0, 2);
 
