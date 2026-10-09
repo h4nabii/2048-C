@@ -16,6 +16,7 @@ void createFileStructures(); // 添加资源保存文件夹
 void saveScore(int score);   // 保存分数
 void loadScore();            // 读取分数
 int readHighestScore();
+void showNoData(); // 屏幕显示无数据（定义于 screen.h）
 
 int readHighestScore()
 {
