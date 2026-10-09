@@ -18,7 +18,30 @@
 #define MOVE_DOWN 3
 #define MOVE_RIGHT 4
 
+// ======================================
+// BOARD
+// ======================================
+
+#define BOARD_SIZE 4
+
+typedef struct {
+  int cell[BOARD_SIZE][BOARD_SIZE];
+} Board;
+
+Board *board_create();
+int board_destroy(Board *board);
+void board_cast(Board *board, int numbers[][4]);
+void board_setup(Board *board, int test_mode);
+int board_check_pos_range(int i, int j);
+int board_get(Board *board, int i, int j);
+int board_set(Board *board, int i, int j, int value);
+int board_is_full(Board *board);
+int board_random_add(Board *board);
+
+// ======================================
 // 游戏相关函数声明
+// ======================================
+
 void numberInit(int numbers[][4]);
 void game2048();                                   // 游戏主函数
 void addBlocks(int N[][4]);                        // 添加方块
@@ -125,6 +148,96 @@ int testIfEnd(int N[][4]) {
   return end;
 }
 
+Board *board_create() {
+  Board *board = (Board *)malloc(sizeof(Board));
+  if (board) {
+    for (int j = 0; j < BOARD_SIZE; j++)
+      for (int i = 0; i < BOARD_SIZE; i++)
+        board->cell[i][j] = 0;
+  }
+  return board;
+}
+
+int board_destroy(Board *board) {
+  if (board) {
+    free(board);
+    return 0;
+  }
+  return -1;
+}
+
+void board_cast(Board *board, int numbers[][4]) {
+  for (int j = 0; j < 4; j++)
+    for (int i = 0; i < 4; i++)
+      numbers[i][j] = board_get(board, i, j);
+}
+
+void board_setup(Board *board, int test_mode) {
+  if (!board)
+    return;
+  if (test_mode) {
+    // 初始化棋盘为测试模式的初始状态
+    for (int j = 0; j < BOARD_SIZE; j++)
+      for (int i = 0; i < BOARD_SIZE; i++)
+        board->cell[i][j] = (int)pow(2.00, (double)i + (double)j * BOARD_SIZE + 1);
+    board_set(board, 3, 3, 0);
+  } else {
+    // 初始化棋盘为普通模式的初始状态
+    board_random_add(board);
+  }
+}
+
+int board_check_pos_range(int i, int j) { return i >= 0 && i < BOARD_SIZE && j >= 0 && j < BOARD_SIZE; }
+
+int board_get(Board *board, int i, int j) {
+  if (!board_check_pos_range(i, j))
+    return -1;
+  return board->cell[i][j];
+}
+
+int board_set(Board *board, int i, int j, int value) {
+  if (!board_check_pos_range(i, j))
+    return -1;
+  board->cell[i][j] = value;
+  return 0;
+}
+
+int board_is_full(Board *board) {
+  for (int j = 0; j < BOARD_SIZE; j++)
+    for (int i = 0; i < BOARD_SIZE; i++)
+      if (board_get(board, i, j) == 0)
+        return 0;
+  return 1;
+}
+
+// 添加方块
+int board_random_add(Board *board) {
+  // 如果棋盘已满，无法添加新方块，返回 -1
+  if (board_is_full(board))
+    return -1;
+
+  // 0-15 生成 2，16-19 生成 4
+  const int RAND_VAL_MAX = 20;
+  const int RAND_THRESHOLD = 16;
+  int rand_val = rand() % RAND_VAL_MAX;
+  int new_num = (rand_val < RAND_THRESHOLD) ? 2 : 4;
+
+  int dup = 1;
+  while (dup) {
+    dup = 0;
+    int i = (rand() % 4);
+    int j = (rand() % 4);
+    if (board_get(board, i, j) == 0)
+      board_set(board, i, j, new_num);
+    else
+      dup = 1;
+  }
+  return 0;
+}
+
+/**
+ * @deprecated Use board_create and board_setup instead.
+ */
 void numberInit(int numbers[][4]) {
   for (int j = 0; j < 4; j++)
     for (int i = 0; i < 4; i++)
@@ -147,8 +260,12 @@ void game2048() {
 
   int end;
 
-  int blockNumbers[4][4];
-  numberInit(blockNumbers);
+  Board *board = board_create();
+  board_setup(board, testMode);
+
+  int blockNumbers[4][4] = {0};
+  board_cast(board, blockNumbers);
+  board_destroy(board);
 
   int quit = 0;
   int surequit = 0;
