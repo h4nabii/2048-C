@@ -54,6 +54,8 @@ void screenInit() {
   // Set window size (useless when using Windows Terminal)
   system("mode con cols=45 lines=25");
 
+  // 界面文案为 UTF-8，控制台需按 UTF-8 解释，否则中文乱码并撑破边框
+  SetConsoleOutputCP(CP_UTF8);
 
   SetConsoleTitleA("2048");
 
