@@ -2,7 +2,7 @@ SHELL = pwsh.exe
 .SHELLFLAGS = -NoProfile -Command
 
 # ===== 配置 =====
-SRC         = source-code
+SRC         = src
 OUT         = dist
 MAIN        = 2048
 
