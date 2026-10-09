@@ -10,11 +10,12 @@
 // wait digit input
 int waitDigitKeyDown(int start, int end)
 {
-	int input;
+    int input;
     while (input = _getch())
     {
-		input -= '0';
-		if ((start <= input) && (input <= end)) return input;	
+        input -= '0';
+        if ((start <= input) && (input <= end))
+            return input;
     }
     return -1;
 }

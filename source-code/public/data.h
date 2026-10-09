@@ -78,7 +78,6 @@ int readHighestScore()
     return highestScore;
 }
 
-// 保存相关函数声明
 void fileInit()
 {
     // Test if runing the first time, create necessary files

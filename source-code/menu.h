@@ -7,8 +7,8 @@
 
 #include "settings.h"
 
-#define MENU_LOAD       1
-#define MENU_SETTING    2
+#define MENU_LOAD 1
+#define MENU_SETTING 2
 
 void runMenu()
 {

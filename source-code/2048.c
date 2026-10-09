@@ -12,10 +12,10 @@
 
 #include "main.h"
 
-
 // Initial the program
 void init()
 {
+    // Set the random seed and initialize the screen and file system
     srand((unsigned int)time(NULL));
     screenInit();
     fileInit();

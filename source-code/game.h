@@ -207,7 +207,7 @@ void game2048()
         if (!surequit)
         {
             int addNumber = 0, moveNumber = 0;
-            
+
             for (int i = 0; i < 4; i++)
             {
                 if (i == 2)

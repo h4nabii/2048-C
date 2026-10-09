@@ -17,7 +17,6 @@
 #define MAIN_GAME 1
 #define MAIN_MENU 2
 
-
 void runHome()
 {
     int command;
