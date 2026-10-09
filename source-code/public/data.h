@@ -11,6 +11,7 @@
 
 // TODO: remove input and screen related code.
 #include "input.h"
+#include "storage_path.h"
 
 void createFileStructures(); // 添加资源保存文件夹
 void saveScore(int score);   // 保存分数
@@ -24,7 +25,7 @@ int readHighestScore() {
   int counter;            // 测试数据数量时读取数据的储存变量
   int quantityOfData = 0; // 数据数量
 
-  if (fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r")) {
+  if (fopen_s(&scoreFile, storagePaths.score, "r")) {
     printf("Error: Unable to read score file");
     return -1;
   }
@@ -49,7 +50,7 @@ int readHighestScore() {
 
     int *scoreData = (int *)malloc(7 * quantityOfData * sizeof(int));
 
-    if (fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r")) {
+    if (fopen_s(&scoreFile, storagePaths.score, "r")) {
       printf("Error: Unable to read score file");
       return -1;
     }
@@ -78,10 +79,10 @@ int readHighestScore() {
 void fileInit() {
   // Test if runing the first time, create necessary files
   FILE *file;
-  if (fopen_s(&file, "TEST\\HaveDone.txt", "r")) {
+  if (fopen_s(&file, storagePaths.testMark, "r")) {
     // file not exist, generate structures
-    _mkdir("TEST");
-    if (!fopen_s(&file, "TEST\\HaveDone.txt", "w")) {
+    _mkdir(storagePaths.testDir);
+    if (!fopen_s(&file, storagePaths.testMark, "w")) {
       fprintf(file, "HavePrepared\n");
       fclose(file);
       createFileStructures();
@@ -102,7 +103,7 @@ void saveScore(int score) {
 
   FILE *scoreFile;
   errno_t fileErr;
-  fileErr = fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r+");
+  fileErr = fopen_s(&scoreFile, storagePaths.score, "r+");
 
   // 0L, convert to long before overflow
   fseek(scoreFile, 0 - (long)sizeof(int), SEEK_END);
@@ -124,7 +125,7 @@ void loadScore() {
   int choice;                      // 存储选择
   int blanks;                      // 记录不需打印的行数
 
-  fileErr = fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r");
+  fileErr = fopen_s(&scoreFile, storagePaths.score, "r");
 
   fscanf_s(scoreFile, "%d", &counter);
   while (counter != 0) // 计数据数量
@@ -144,7 +145,7 @@ void loadScore() {
 
     int *scoreData = (int *)malloc(7 * 15 * page * sizeof(int));
 
-    fileErr = fopen_s(&scoreFile, "SAVE\\SCORE\\score.txt", "r");
+    fileErr = fopen_s(&scoreFile, storagePaths.score, "r");
 
     for (int i = 0; i < quantityOfData; i++) // 读取数据
     {
@@ -217,20 +218,20 @@ void loadScore() {
 
 // 添加资源保存文件夹
 void createFileStructures() {
-  _mkdir("SAVE");
-  _mkdir("SCREEN");
+  _mkdir(storagePaths.saveDir);
+  _mkdir(storagePaths.screenDir);
 
-  _mkdir("SAVE\\SCORE");
-  _mkdir("SAVE\\GAME_SAVE");
-  _mkdir("SCREEN\\STYLE");
-  _mkdir("SCREEN\\CONTROL_WAY");
+  _mkdir(storagePaths.scoreDir);
+  _mkdir(storagePaths.gameSaveDir);
+  _mkdir(storagePaths.styleDir);
+  _mkdir(storagePaths.controlWayDir);
 
   errno_t err;
   FILE *pFile;
 
-  err = fopen_s(&pFile, "SAVE\\SCORE\\score.txt", "w");
+  err = fopen_s(&pFile, storagePaths.score, "w");
   fprintf(pFile, "0000");
   fclose(pFile);
-  err = fopen_s(&pFile, "SAVE\\SCORE\\highest score.txt", "w");
+  err = fopen_s(&pFile, storagePaths.highestScore, "w");
   fclose(pFile);
 }
