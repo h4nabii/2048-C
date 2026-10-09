@@ -65,6 +65,20 @@
 
 **这些约定在起作用，如果：** 改动里少了无关修改，少了因为写复杂了而返工，澄清问题出现在动手之前。
 
+# C语言命名规范
+
+命名沿用 LLVM 风格，格式化统一由 `.clang-format`（BasedOnStyle: LLVM）控制：
+
+- 函数、变量：camelCase —— `getFolder()`、`highestScore`
+- 宏常量：全大写 + 下划线 —— `MENU_LOAD`、`MAX_PATH`
+- 结构体类型：PascalCase —— `StoragePath`
+
+禁止：
+
+- 前导下划线命名（`_foo`），保留给标准库与编译器
+- `_t` 类型后缀，POSIX 保留
+- 无意义单字母命名，循环计数（`i` `j` `k`）除外
+
 # Git规范
 
 ### 提交格式
