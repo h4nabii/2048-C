@@ -1,0 +1,3 @@
+# C/C++ 格式化：统一采用 clang-format 默认 LLVM 风格
+BasedOnStyle: LLVM
+ColumnLimit: 120

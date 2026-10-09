@@ -8,43 +8,38 @@
 #define CMD_Q 0
 
 // wait digit input
-int waitDigitKeyDown(int start, int end)
-{
-    int input;
-    while (input = _getch())
-    {
-        input -= '0';
-        if ((start <= input) && (input <= end))
-            return input;
-    }
-    return -1;
+int waitDigitKeyDown(int start, int end) {
+  int input;
+  while (input = _getch()) {
+    input -= '0';
+    if ((start <= input) && (input <= end))
+      return input;
+  }
+  return -1;
 }
 
 // wait game command
-int waitGameKeyDown()
-{
-    int input;
-    do
-    {
-        input = _getch();
-    } while ((input != 'w') && (input != 's') && (input != 'a') && (input != 'd') && (input != 'q'));
+int waitGameKeyDown() {
+  int input;
+  do {
+    input = _getch();
+  } while ((input != 'w') && (input != 's') && (input != 'a') && (input != 'd') && (input != 'q'));
 
-    switch (input)
-    {
-    case ('w'):
-        return CMD_W;
-        break;
-    case ('s'):
-        return CMD_S;
-        break;
-    case ('a'):
-        return CMD_A;
-        break;
-    case ('d'):
-        return CMD_D;
-        break;
-    case ('q'):
-    default:
-        return CMD_Q;
-    }
+  switch (input) {
+  case ('w'):
+    return CMD_W;
+    break;
+  case ('s'):
+    return CMD_S;
+    break;
+  case ('a'):
+    return CMD_A;
+    break;
+  case ('d'):
+    return CMD_D;
+    break;
+  case ('q'):
+  default:
+    return CMD_Q;
+  }
 }
