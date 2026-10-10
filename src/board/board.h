@@ -6,6 +6,7 @@ typedef struct {
   int *cell;
 } Board;
 
+
 /**
  * 创建棋盘实例
  * @param h 高度（行数）
@@ -38,30 +39,30 @@ void board_setup(Board *board, int test_mode);
 /**
  * 检查棋盘位置是否在有效范围内
  * @param board 棋盘实例指针
- * @param i 行索引
- * @param j 列索引
+ * @param row 行索引
+ * @param col 列索引
  * @return 如果位置在有效范围内返回非零，否则返回 0
  */
-int board_check_pos_range(Board *board, int i, int j);
+int board_check_pos_range(Board *board, int row, int col);
 
 /**
  * 获取棋盘指定位置的值
  * @param board 棋盘实例指针
- * @param i 行索引
- * @param j 列索引
+ * @param row 行索引
+ * @param col 列索引
  * @return 如果位置有效返回对应的值，否则返回 -1
  */
-int board_get(Board *board, int i, int j);
+int board_get(Board *board, int row, int col);
 
 /**
  * 设置棋盘指定位置的值
  * @param board 棋盘实例指针
- * @param i 行索引
- * @param j 列索引
+ * @param row 行索引
+ * @param col 列索引
  * @param value 要设置的值
  * @return 如果位置有效返回 0，否则返回 -1
  */
-int board_set(Board *board, int i, int j, int value);
+int board_set(Board *board, int row, int col, int value);
 
 /**
  * 检查棋盘是否已满

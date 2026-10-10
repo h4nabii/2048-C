@@ -9,9 +9,9 @@ Board *board_create(int h, int w) {
     board->height = h;
     board->width = w;
     board->cell = (int *)malloc(sizeof(int) * h * w);
-    for (int j = 0; j < h; j++)
-      for (int i = 0; i < w; i++)
-        board->cell[i + j * w] = 0;
+    for (int row = 0; row < h; row++)
+      for (int col = 0; col < w; col++)
+        board->cell[row * w + col] = 0;
   }
   return board;
 }
@@ -26,9 +26,9 @@ int board_destroy(Board *board) {
 }
 
 void board_cast(Board *board, int numbers[][4]) {
-  for (int j = 0; j < 4; j++)
-    for (int i = 0; i < 4; i++)
-      numbers[i][j] = board_get(board, i, j);
+  for (int row = 0; row < 4; row++)
+    for (int col = 0; col < 4; col++)
+      numbers[col][row] = board_get(board, row, col);
 }
 
 void board_setup(Board *board, int test_mode) {
@@ -36,9 +36,9 @@ void board_setup(Board *board, int test_mode) {
     return;
   if (test_mode) {
     // 初始化棋盘为测试模式的初始状态
-    for (int j = 0; j < board->height; j++)
-      for (int i = 0; i < board->width; i++)
-        board->cell[i + j * board->width] = (int)pow(2.00, (double)i + (double)j * board->width + 1);
+    for (int row = 0; row < board->height; row++)
+      for (int col = 0; col < board->width; col++)
+        board->cell[col + row * board->width] = (int)pow(2.00, (double)col + (double)row * board->width + 1);
     board_set(board, 3, 3, 0);
   } else {
     // 初始化棋盘为普通模式的初始状态
@@ -46,27 +46,27 @@ void board_setup(Board *board, int test_mode) {
   }
 }
 
-int board_check_pos_range(Board *board, int i, int j) {
-  return i >= 0 && i < board->height && j >= 0 && j < board->width;
+int board_check_pos_range(Board *board, int row, int col) {
+  return row >= 0 && row < board->height && col >= 0 && col < board->width;
 }
 
-int board_get(Board *board, int i, int j) {
-  if (!board_check_pos_range(board, i, j))
+int board_get(Board *board, int row, int col) {
+  if (!board_check_pos_range(board, row, col))
     return -1;
-  return board->cell[i + j * board->width];
+  return board->cell[row * board->width + col];
 }
 
-int board_set(Board *board, int i, int j, int value) {
-  if (!board_check_pos_range(board, i, j))
+int board_set(Board *board, int row, int col, int value) {
+  if (!board_check_pos_range(board, row, col))
     return -1;
-  board->cell[i + j * board->width] = value;
+  board->cell[row * board->width + col] = value;
   return 0;
 }
 
 int board_is_full(Board *board) {
-  for (int j = 0; j < board->height; j++)
-    for (int i = 0; i < board->width; i++)
-      if (board_get(board, i, j) == 0)
+  for (int row = 0; row < board->height; row++)
+    for (int col = 0; col < board->width; col++)
+      if (board_get(board, row, col) == 0)
         return 0;
   return 1;
 }
@@ -85,12 +85,13 @@ int board_random_add(Board *board) {
   int dup = 1;
   while (dup) {
     dup = 0;
-    int i = (rand() % board->height);
-    int j = (rand() % board->width);
-    if (board_get(board, i, j) == 0)
-      board_set(board, i, j, new_num);
+    int row = (rand() % board->height);
+    int col = (rand() % board->width);
+    if (board_get(board, row, col) == 0)
+      board_set(board, row, col, new_num);
     else
       dup = 1;
   }
   return 0;
 }
+
