@@ -67,9 +67,9 @@
 
 # C语言命名规范
 
-命名沿用 LLVM 风格，格式化统一由 `.clang-format`（BasedOnStyle: LLVM）控制：
+命名统一使用 snake_case，格式化统一由 `.clang-format`（BasedOnStyle: LLVM）控制：
 
-- 函数、变量：camelCase —— `getFolder()`、`highestScore`
+- 函数、变量：snake_case —— `get_folder()`、`highest_score`
 - 宏常量：全大写 + 下划线 —— `MENU_LOAD`、`MAX_PATH`
 - 结构体类型：PascalCase —— `StoragePath`
 
