@@ -141,7 +141,6 @@ void game2048() {
 
   int blockNumbers[4][4] = {0};
   board_cast(board, blockNumbers);
-  board_destroy(board);
 
   int quit = 0;
   int surequit = 0;
@@ -169,18 +168,29 @@ void game2048() {
     }
 
     if (!surequit) {
-      int addNumber = 0, moveNumber = 0;
+      // int addNumber = 0, moveNumber = 0;
 
-      for (int i = 0; i < 4; i++) {
-        if (i == 2)
-          addNumber += addUpBlocks(blockNumbers, command, &score);
-        else
-          moveNumber += moveBlocks(blockNumbers, command);
-      }
-      while ((addNumber + moveNumber) != 0) {
-        addBlocks(blockNumbers);
-        addNumber = 0, moveNumber = 0;
-      }
+      int move_count = 0;
+      move_count += board_move_all(board, command);
+      int merge_count = board_merge_all(board, command);
+      score += merge_count;
+      move_count += board_move_all(board, command);
+
+      if (move_count > 0 || merge_count > 0)
+        board_random_add(board);
+
+      board_cast(board, blockNumbers);
+
+      // for (int i = 0; i < 4; i++) {
+      //   if (i == 2)
+      //     addNumber += addUpBlocks(blockNumbers, command, &score);
+      //   else
+      //     moveNumber += moveBlocks(blockNumbers, command);
+      // }
+      // while ((addNumber + moveNumber) != 0) {
+      //   addBlocks(blockNumbers);
+      //   addNumber = 0, moveNumber = 0;
+      // }
 
       if (command != 0)
         end = testIfEnd(blockNumbers);
@@ -192,6 +202,8 @@ void game2048() {
 
   if (!testMode && !quit)
     saveScore(score);
+
+  board_destroy(board);
 }
 
 void setMode(int mode, int *up, int *down, int *left, int *right) {
