@@ -1,11 +1,6 @@
 #pragma once
+#include "constants.h"
 #include <conio.h>
-
-#define CMD_W 1
-#define CMD_A 2
-#define CMD_S 3
-#define CMD_D 4
-#define CMD_Q 0
 
 // wait digit input
 int waitDigitKeyDown(int start, int end) {
@@ -19,7 +14,7 @@ int waitDigitKeyDown(int start, int end) {
 }
 
 // wait game command
-int waitGameKeyDown() {
+MoveDirection wait_game_key_down() {
   int input;
   do {
     input = _getch();
@@ -27,19 +22,15 @@ int waitGameKeyDown() {
 
   switch (input) {
   case ('w'):
-    return CMD_W;
-    break;
+    return COMMAND_MOVE_UP;
   case ('s'):
-    return CMD_S;
-    break;
+    return COMMAND_MOVE_DOWN;
   case ('a'):
-    return CMD_A;
-    break;
+    return COMMAND_MOVE_LEFT;
   case ('d'):
-    return CMD_D;
-    break;
+    return COMMAND_MOVE_RIGHT;
   case ('q'):
   default:
-    return CMD_Q;
+    return COMMAND_QUIT;
   }
 }

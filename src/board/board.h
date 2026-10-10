@@ -1,12 +1,11 @@
 #pragma once
+#include "../constants.h"
 
 typedef struct {
   int height;
   int width;
   int *cell;
 } Board;
-
-typedef enum { MOVE_UP = 1, MOVE_LEFT = 2, MOVE_DOWN = 3, MOVE_RIGHT = 4 } MoveDirection;
 
 /**
  * 创建棋盘实例

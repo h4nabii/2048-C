@@ -8,18 +8,11 @@
 #include <windows.h>
 
 #include "board/board.h"
+#include "constants.h"
 #include "public/data.h"
 #include "public/global.h"
 #include "public/input.h"
 #include "public/screen.h"
-
-#define MOVE_UP 1
-#define MOVE_LEFT 2
-#define MOVE_DOWN 3
-#define MOVE_RIGHT 4
-
-// 2048 的棋盘边长
-#define BOARD_SIZE 4
 
 // ======================================
 // 游戏相关函数声明
@@ -146,15 +139,15 @@ void game2048() {
   int surequit = 0;
 
   do {
-    int command;
+    MoveDirection command;
     printBlocks(blockNumbers, score, highestScore);
 
     if (testMode)
-      command = CMD_D;
+      command = COMMAND_MOVE_RIGHT;
     else
-      command = waitGameKeyDown();
+      command = wait_game_key_down();
 
-    if (command == CMD_Q) {
+    if (command == COMMAND_QUIT) {
       showQuitCheck();
       surequit = waitDigitKeyDown(0, 1);
 
@@ -209,16 +202,16 @@ void game2048() {
 void setMode(int mode, int *up, int *down, int *left, int *right) {
   *up = *down = *left = *right = 0;
   switch (mode) {
-  case (MOVE_UP):
+  case (COMMAND_MOVE_UP):
     *up = 1;
     break;
-  case (MOVE_DOWN):
+  case (COMMAND_MOVE_DOWN):
     *down = 1;
     break;
-  case (MOVE_LEFT):
+  case (COMMAND_MOVE_LEFT):
     *left = 1;
     break;
-  case (MOVE_RIGHT):
+  case (COMMAND_MOVE_RIGHT):
     *right = 1;
     break;
   default:
