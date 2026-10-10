@@ -105,7 +105,16 @@ void board_print(Board *board) {
   }
 }
 
+// 方向是否为上下左右之一，其它取值（如 COMMAND_QUIT）不是合法移动方向
+static int board_is_move_direction(MoveDirection direction) {
+  return direction == COMMAND_MOVE_UP || direction == COMMAND_MOVE_DOWN || direction == COMMAND_MOVE_LEFT ||
+         direction == COMMAND_MOVE_RIGHT;
+}
+
 int board_move_all(Board *board, MoveDirection direction) {
+  if (!board_is_move_direction(direction))
+    return 0;
+
   // 计算移动的长度，根据方向选择行或列的长度
   const int is_horizontal = direction == COMMAND_MOVE_LEFT || direction == COMMAND_MOVE_RIGHT;
   // 左上为负，右下为正，决定移动的方向，逆序遍历
@@ -145,7 +154,10 @@ int board_move_all(Board *board, MoveDirection direction) {
   return move_count;
 }
 
-int board_merge_all(Board *board, MoveDirection direction) { // 计算移动的长度，根据方向选择行或列的长度
+int board_merge_all(Board *board, MoveDirection direction) {
+  if (!board_is_move_direction(direction))
+    return 0;
+
   const int is_horizontal = direction == COMMAND_MOVE_LEFT || direction == COMMAND_MOVE_RIGHT;
   // 左上为负，右下为正，决定移动的方向，逆序遍历
   const int step = direction == COMMAND_MOVE_UP || direction == COMMAND_MOVE_LEFT ? -1 : 1;

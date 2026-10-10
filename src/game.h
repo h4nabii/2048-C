@@ -58,6 +58,8 @@ void game2048() {
   int quit = 0;
   int surequit = 0;
 
+  // TODO：2. 优化控制流，确保 COMMAND 和 DIRECTION 不混淆
+
   do {
     MoveDirection command;
     printBlocks(blockNumbers, score, highestScore);
@@ -80,8 +82,7 @@ void game2048() {
       }
     }
 
-    if (!surequit) {
-      // int addNumber = 0, moveNumber = 0;
+    if (command != COMMAND_QUIT) {
 
       int move_count = 0;
       move_count += board_move_all(board, command);
@@ -94,8 +95,7 @@ void game2048() {
 
       board_cast(board, blockNumbers);
 
-      if (command != 0)
-        end = testIfEnd(blockNumbers);
+      end = testIfEnd(blockNumbers);
     }
 
   } while (!end);

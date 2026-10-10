@@ -81,15 +81,15 @@ int board_random_add(Board *board);
 /**
  * 移动棋盘上的方块
  * @param board 棋盘实例指针
- * @param direction 移动方向
- * @return 成功返回移动的方块数量，失败返回 -1
+ * @param direction 移动方向，非上下左右（如 COMMAND_QUIT）时不作任何移动
+ * @return 移动的方块数量，非法方向返回 0
  */
 int board_move_all(Board *board, MoveDirection direction);
 
 /**
  * 合并棋盘上的方块
  * @param board 棋盘实例指针
- * @param direction 移动方向
- * @return 成功返回合并的方块的值，失败返回 0
+ * @param direction 移动方向，非上下左右（如 COMMAND_QUIT）时不作任何合并
+ * @return 合并的方块的值，非法方向返回 0
  */
 int board_merge_all(Board *board, MoveDirection direction);
