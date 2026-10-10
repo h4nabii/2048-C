@@ -1,9 +1,3 @@
-/*
-    GAME2048
-    version 4
-    GamePart.h
-*/
-
 #include <stdio.h>
 #include <windows.h>
 
@@ -18,86 +12,12 @@
 // 游戏相关函数声明
 // ======================================
 
-void game2048();                                   // 游戏主函数
-void addBlocks(int N[][4]);                        // 添加方块
-int moveBlocks(int N[][4], int mode);              // 移动方块
-int addUpBlocks(int N[][4], int mode, int *score); // 加和方块
-int testIfEnd(int N[][4]);                         // 测试结束
+void game2048();           // 游戏主函数
+int testIfEnd(int N[][4]); // 测试结束
 void setMode(int mode, int *up, int *down, int *left, int *right);
 
-// 添加方块
-void addBlocks(int N[][4]) {
-  int dup = 1;
-
-  while (dup) {
-    dup = 0;
-    int addBlockNumber;
-    int randBlockNumber = rand() % 20;
-
-    if (randBlockNumber >= 0 && randBlockNumber <= 15)
-      addBlockNumber = 2;
-    if (randBlockNumber >= 16 && randBlockNumber <= 20)
-      addBlockNumber = 4;
-
-    int i = (rand() % 4);
-    int j = (rand() % 4);
-
-    if (N[i][j] == 0)
-      N[i][j] = addBlockNumber;
-    else
-      dup = 1;
-  }
-}
-
-// 移动方块
-int moveBlocks(int N[][4], int mode) {
-  int prev, cur, moved = 0;
-
-  int up, down, left, right;
-  setMode(mode, &up, &down, &left, &right);
-
-  for (int j = 0; j < 4; j++)
-    for (int i = 0; i < 3; i++) {
-      prev = N[j * (up + down) + i * left + (3 - i) * right][j * (right + left) + i * up + (3 - i) * down];
-      cur = N[j * (up + down) + (i + 1) * left + (2 - i) * right][j * (right + left) + (i + 1) * up + (2 - i) * down];
-
-      if (prev == 0 && cur != 0) {
-        prev = cur;
-        cur = 0;
-        N[j * (up + down) + i * left + (3 - i) * right][j * (right + left) + i * up + (3 - i) * down] = prev;
-        N[j * (up + down) + (i + 1) * left + (2 - i) * right][j * (right + left) + (i + 1) * up + (2 - i) * down] = cur;
-        moved++;
-      }
-    }
-  return moved;
-}
-
-// 加和方块
-int addUpBlocks(int N[][4], int mode, int *score) {
-  int prev, cur, added = 0;
-
-  int up, down, left, right;
-  setMode(mode, &up, &down, &left, &right);
-
-  for (int j = 0; j < 4; j++) {
-    for (int i = 0; i < 3; i++) {
-      prev = N[j * (up + down) + i * left + (3 - i) * right][j * (right + left) + i * up + (3 - i) * down];
-      cur = N[j * (up + down) + (i + 1) * left + (2 - i) * right][j * (right + left) + (i + 1) * up + (2 - i) * down];
-
-      if (prev == cur && prev != 0 && cur != 0) {
-        added++;
-        prev = 2 * cur;
-        *score += (2 * cur);
-        cur = 0;
-        N[j * (up + down) + i * left + (3 - i) * right][j * (right + left) + i * up + (3 - i) * down] = prev;
-        N[j * (up + down) + (i + 1) * left + (2 - i) * right][j * (right + left) + (i + 1) * up + (2 - i) * down] = cur;
-      }
-    }
-  }
-  return added;
-}
-
 // 测试结束
+// TODO：1. 实现 board_can_merge，用于判断棋盘是否无法合并，结合 board_is_full，优化 testIfEnd 函数
 int testIfEnd(int N[][4]) {
   int end = 1;
 
@@ -173,17 +93,6 @@ void game2048() {
         board_random_add(board);
 
       board_cast(board, blockNumbers);
-
-      // for (int i = 0; i < 4; i++) {
-      //   if (i == 2)
-      //     addNumber += addUpBlocks(blockNumbers, command, &score);
-      //   else
-      //     moveNumber += moveBlocks(blockNumbers, command);
-      // }
-      // while ((addNumber + moveNumber) != 0) {
-      //   addBlocks(blockNumbers);
-      //   addNumber = 0, moveNumber = 0;
-      // }
 
       if (command != 0)
         end = testIfEnd(blockNumbers);
