@@ -6,6 +6,7 @@ typedef struct {
   int *cell;
 } Board;
 
+typedef enum { MOVE_UP = 1, MOVE_LEFT = 2, MOVE_DOWN = 3, MOVE_RIGHT = 4 } MoveDirection;
 
 /**
  * 创建棋盘实例
@@ -77,3 +78,19 @@ int board_is_full(Board *board);
  * @return 成功返回 0，失败返回 -1
  */
 int board_random_add(Board *board);
+
+/**
+ * 移动棋盘上的方块
+ * @param board 棋盘实例指针
+ * @param direction 移动方向
+ * @return 成功返回移动的方块数量，失败返回 -1
+ */
+int board_move_all(Board *board, MoveDirection direction);
+
+/**
+ * 合并棋盘上的方块
+ * @param board 棋盘实例指针
+ * @param direction 移动方向
+ * @return 成功返回合并的方块的值，失败返回 0
+ */
+int board_merge_all(Board *board, MoveDirection direction);

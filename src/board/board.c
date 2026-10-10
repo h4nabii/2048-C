@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 Board *board_create(int h, int w) {
@@ -95,3 +96,88 @@ int board_random_add(Board *board) {
   return 0;
 }
 
+void board_print(Board *board) {
+  for (int row = 0; row < board->height; row++) {
+    for (int col = 0; col < board->width; col++) {
+      printf("%4d ", board_get(board, row, col));
+    }
+    printf("\n");
+  }
+}
+
+int board_move_all(Board *board, MoveDirection direction) {
+  // 计算移动的长度，根据方向选择行或列的长度
+  const int is_horizontal = direction == MOVE_LEFT || direction == MOVE_RIGHT;
+  // 左上为负，右下为正，决定移动的方向，逆序遍历
+  const int step = direction == MOVE_UP || direction == MOVE_LEFT ? -1 : 1;
+
+  // 根据移动方向确定遍历顺序和步长
+  const int len = is_horizontal ? board->width : board->height;
+  const int pad = is_horizontal ? board->height : board->width;
+
+  // 根据移动方向计算行列偏移量
+  const int row_offset = is_horizontal ? 0 : step;
+  const int col_offset = is_horizontal ? step : 0;
+
+  // 标记是否有方块移动
+  int move_count = 0;
+
+  for (int p = 0; p < pad; p++) {
+    for (int i = 1; i < len; i++) {
+      for (int j = i; j > 0; j--) {
+        // 根据移动方向进行坐标转换
+        const int iter = step == -1 ? j : len - 1 - j;
+        const int row = is_horizontal ? p : iter;
+        const int col = is_horizontal ? iter : p;
+        const int next_row = row + row_offset;
+        const int next_col = col + col_offset;
+        // 移动数值
+        const int cur_val = board_get(board, row, col);
+        const int pre_val = board_get(board, next_row, next_col);
+        if (cur_val == 0 || pre_val != 0)
+          break;
+        board_set(board, next_row, next_col, cur_val);
+        board_set(board, row, col, 0);
+        move_count++;
+      }
+    }
+  }
+  return move_count;
+}
+
+int board_merge_all(Board *board, MoveDirection direction) { // 计算移动的长度，根据方向选择行或列的长度
+  const int is_horizontal = direction == MOVE_LEFT || direction == MOVE_RIGHT;
+  // 左上为负，右下为正，决定移动的方向，逆序遍历
+  const int step = direction == MOVE_UP || direction == MOVE_LEFT ? -1 : 1;
+
+  // 根据移动方向确定遍历顺序和步长
+  const int len = is_horizontal ? board->width : board->height;
+  const int pad = is_horizontal ? board->height : board->width;
+
+  // 根据移动方向计算行列偏移量
+  const int row_offset = is_horizontal ? 0 : step;
+  const int col_offset = is_horizontal ? step : 0;
+
+  // 标记合并的方块的总值
+  int merge_count = 0;
+
+  for (int p = 0; p < pad; p++) {
+    for (int i = 1; i < len; i++) {
+      // 根据移动方向进行坐标转换
+      const int iter = step == -1 ? i : len - 1 - i;
+      const int row = is_horizontal ? p : iter;
+      const int col = is_horizontal ? iter : p;
+      const int next_row = row + row_offset;
+      const int next_col = col + col_offset;
+      // 合并数值
+      const int cur_val = board_get(board, row, col);
+      const int pre_val = board_get(board, next_row, next_col);
+      if (cur_val != 0 && pre_val != 0 && cur_val == pre_val) {
+        board_set(board, next_row, next_col, cur_val * 2);
+        board_set(board, row, col, 0);
+        merge_count += cur_val * 2;
+      }
+    }
+  }
+  return merge_count;
+}
