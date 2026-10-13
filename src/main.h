@@ -24,13 +24,13 @@ void runHome() {
 
   do {
     showHome();
-    command = waitDigitKeyDown(0, 2);
+    command = waitDigitKeyDown(0, 2, showHome);
 
     if (command == MAIN_GAME) {
       do {
         game2048();
         showGameOver();
-        stillPlay = waitDigitKeyDown(0, 1);
+        stillPlay = waitDigitKeyDown(0, 1, showGameOver);
       } while (stillPlay);
     } else if (command == MAIN_MENU) {
       runMenu();

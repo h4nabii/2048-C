@@ -10,6 +10,7 @@
 
 // 设置相关函数
 void settingGreeting();    // 打印设置界面
+void showColorTest();      // 打印颜色测试确认界面
 int toMakeSureColorTest(); // 询问是否打开测试模式
 
 //******************************************************************************************
@@ -18,7 +19,7 @@ void runSetting() {
   int settingChoice;
   do {
     settingGreeting();
-    settingChoice = waitDigitKeyDown(0, 1);
+    settingChoice = waitDigitKeyDown(0, 1, settingGreeting);
     if (settingChoice == 1)
       testMode = toMakeSureColorTest();
   } while (settingChoice);
@@ -43,11 +44,12 @@ static const char *colorTestLines[COLOR_TEST_ROWS] = {
     defineLine(6, "1：是        0：否"),
 };
 
+// 打印颜色测试确认界面
+void showColorTest() { renderScreen(colorTestLines, COLOR_TEST_ROWS, 1); }
+
 // 询问是否打开测试模式
 int toMakeSureColorTest() {
-  int Choice;
+  showColorTest();
 
-  renderScreen(colorTestLines, COLOR_TEST_ROWS, 1);
-  Choice = waitDigitKeyDown(0, 1);
-  return Choice;
+  return waitDigitKeyDown(0, 1, showColorTest);
 }

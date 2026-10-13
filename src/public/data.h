@@ -175,7 +175,14 @@ void loadScore() {
 
       renderScoreTable(printedNumbers, page, currentPage);
 
-      choice = waitDigitKeyDown(0, 2);
+      do {
+        choice = poll_key(FRAME_MS);
+
+        if (choice == KEY_RESIZE)
+          renderScoreTable(printedNumbers, page, currentPage); // 尺寸变了按新尺寸重绘
+      } while (choice < '0' || choice > '2');
+
+      choice -= '0';
 
       switch (choice) // 判断选择
       {
@@ -197,7 +204,7 @@ void loadScore() {
 
   else { // 若无数据
     showNoData();
-    choice = waitDigitKeyDown(0, 0);
+    choice = waitDigitKeyDown(0, 0, showNoData);
   }
 }
 

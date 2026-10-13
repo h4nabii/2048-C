@@ -14,7 +14,7 @@ void runMenu() {
   int menuChoice;
   do {
     showMenu();
-    menuChoice = waitDigitKeyDown(0, 2);
+    menuChoice = waitDigitKeyDown(0, 2, showMenu);
 
     if (menuChoice == MENU_LOAD) {
       loadScore();

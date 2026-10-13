@@ -64,14 +64,24 @@ void game2048() {
     MoveDirection command;
     printBlocks(blockNumbers, score, highestScore);
 
-    if (testMode)
+    if (testMode) {
       command = COMMAND_MOVE_RIGHT;
-    else
-      command = wait_game_key_down();
+    } else {
+      int key;
+
+      do {
+        key = poll_key(FRAME_MS);
+
+        if (key == KEY_RESIZE)
+          printBlocks(blockNumbers, score, highestScore); // 尺寸变了按新尺寸重绘
+      } while (!is_game_key(key));
+
+      command = key_to_command(key);
+    }
 
     if (command == COMMAND_QUIT) {
       showQuitCheck();
-      surequit = waitDigitKeyDown(0, 1);
+      surequit = waitDigitKeyDown(0, 1, showQuitCheck);
 
       if (surequit == 1) {
         end = 1;
