@@ -5,10 +5,14 @@
 #define SCREEN_WIDTH 42
 #define SCREEN_INNER 40
 
+// 控制台窗口尺寸（列 × 行）：放得下最宽的一行（棋盘行的 45 列）与最高的界面
+#define WINDOW_WIDTH 45
+#define WINDOW_HEIGHT 25
+
 // 界面配置项：在初始化列表里按行号定义一行内容，未定义的行留空
 #define defineLine(row, text) [row] = text
 
-void screenInit();
+void screen_init();
 
 /**
  * 渲染一个界面：可选清屏，随后输出顶边留白、上下边框，内容行按内容区居中。
@@ -25,3 +29,13 @@ void printBlocks(int numbers[][4], int score, int highestScore);
  * 渲染分数记录分页界面：每页 15 行，行首为 0 表示该行留空。
  */
 void renderScoreTable(int rows[][7], int page, int currentPage);
+
+/**
+ * 读取终端可见窗口的尺寸（列 × 行）；无控制台（输出被重定向）时返回 0 × 0。
+ */
+void get_window_size(int *width, int *height);
+
+/**
+ * 退出备用屏幕，恢复进入前的终端内容；正常退出与 Ctrl+C 都会调用，重复调用无副作用。
+ */
+void leave_alternate_screen();

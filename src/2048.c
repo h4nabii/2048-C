@@ -14,15 +14,17 @@
 
 // Initial the program
 void init() {
-  // Set the random seed and initialize the screen and file system
+  // Set the random seed and initialize the screen, input and file system
   srand((unsigned int)time(NULL));
   initStoragePaths();
-  screenInit();
+  screen_init();
+  input_init();
   fileInit();
 }
 
 int main() {
   init();
   runHome();
+  leave_alternate_screen();
   return 0;
 }

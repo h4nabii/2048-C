@@ -1,7 +1,10 @@
 #include "render.h"
+#include "tui.h"
 
 #include <math.h>
 #include <stdio.h>
+
+#include <windows.h>
 
 #define DEFAULT_COLOR (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | BACKGROUND_INTENSITY)
 
@@ -72,25 +75,94 @@ static void hideCursor() {
   SetConsoleCursorInfo(hOut, &info);
 }
 
-// 顶边留白，把盒子下移一行
+// 是否已进入备用屏幕：输出被重定向时不会进，退出时也就无需复位
+static int alternate_screen = 0;
+
+// 开启 VT 处理——vim 用的备用屏幕序列要靠它才被识别。返回输出是否为控制台
+static int enable_vt() {
+  HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  DWORD mode;
+
+  if (!GetConsoleMode(hOut, &mode))
+    return 0;
+
+  SetConsoleMode(hOut, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+  return 1;
+}
+
+// 进入备用屏幕：原屏幕内容（含滚动回看）被完整保存，退出时整体恢复；
+// 缓冲区也随之变成窗口大小，clearConsole 不必再填满整个回看区
+static void enter_alternate_screen() {
+  printf("\x1b[?1049h");
+  fflush(stdout);
+  alternate_screen = 1;
+}
+
+// 退出备用屏幕：正常退出与 Ctrl+C 都要走这里，否则终端会留在里面
+void leave_alternate_screen() {
+  if (!alternate_screen)
+    return;
+
+  alternate_screen = 0;
+  printf("\x1b[?1049l");
+  fflush(stdout);
+}
+
+// Ctrl+C / 关闭窗口时先恢复原屏幕，再交回默认处理（终止进程）
+static BOOL WINAPI console_exit_handler(DWORD type) {
+  (void)type;
+  leave_alternate_screen();
+
+  return FALSE;
+}
+
+// 顶边留白，把盒子下移一行；左上角显示当前窗口尺寸
 static void printTopMargin() {
-  for (int i = 0; i < SCREEN_WIDTH; i++)
+  int width, height;
+  int printed;
+
+  get_window_size(&width, &height);
+
+  printed = printf("%dx%d", width, height);
+  for (int i = printed; i < SCREEN_WIDTH; i++)
     putchar(' ');
   putchar('\n');
 }
 
-void screenInit() {
+void char_set_init() {
+  SetConsoleOutputCP(CP_UTF8);
+  SetConsoleCP(CP_UTF8);
+}
+
+void get_window_size(int *width, int *height) {
+  HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_SCREEN_BUFFER_INFO info;
+
+  if (!GetConsoleScreenBufferInfo(hOut, &info)) {
+    *width = 0;
+    *height = 0;
+    return;
+  }
+
+  *width = info.srWindow.Right - info.srWindow.Left + 1;  // 可见窗口的宽（列）
+  *height = info.srWindow.Bottom - info.srWindow.Top + 1; // 可见窗口的高（行）
+}
+
+void screen_init() {
   HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
   // 整帧攒够一次写进控制台：stdout 接控制台时默认行缓冲，逐行写每行都会触发一次
   // 重绘（实测 22 行约 15ms），攒成一帧只 0.16ms。各界面结尾必须 fflush。
   setvbuf(stdout, NULL, _IOFBF, 8192);
 
-  // Set window size (useless when using Windows Terminal)
-  system("mode con cols=45 lines=25");
+  if (enable_vt()) {
+    SetConsoleCtrlHandler(console_exit_handler, TRUE);
+    enter_alternate_screen();
+  }
 
-  // 界面文案为 UTF-8，控制台需按 UTF-8 解释，否则中文乱码并撑破边框
-  SetConsoleOutputCP(CP_UTF8);
+  tui_init();
+
+  char_set_init();
 
   SetConsoleTitleA("2048");
 
@@ -100,19 +172,48 @@ void screenInit() {
   hideCursor();
 }
 
-void renderScreen(const char *const *lines, int lineCount, int clearScreen) {
-  if (clearScreen)
-    clearConsole();
+// 顶边留白那行的左上角：当前窗口尺寸
+static void print_window_size() {
+  char text[16];
 
-  printTopMargin();
-  printBorder();
+  snprintf(text, sizeof(text), "%dx%d", tui_cols(), tui_rows());
+  tui_put(0, 0, text, DEFAULT_COLOR);
+}
+
+// 上/下边框
+static void draw_border(int y) {
+  char line[SCREEN_INNER + 1];
+
+  for (int i = 0; i < SCREEN_INNER; i++)
+    line[i] = '*';
+  line[SCREEN_INNER] = 0;
+
+  tui_put(0, y, "|", DEFAULT_COLOR);
+  tui_put(1, y, line, DEFAULT_COLOR);
+  tui_put(SCREEN_WIDTH - 1, y, "|", DEFAULT_COLOR);
+}
+
+// 内容行：两侧边框 + 内容在内容区居中（行内留白已由 tui_clear 铺好）
+static void draw_content_line(int y, const char *text) {
+  tui_put(0, y, "|", DEFAULT_COLOR);
+  tui_put(1 + (SCREEN_INNER - displayWidth(text)) / 2, y, text, DEFAULT_COLOR);
+  tui_put(SCREEN_WIDTH - 1, y, "|", DEFAULT_COLOR);
+}
+
+void renderScreen(const char *const *lines, int lineCount, int clearScreen) {
+  int y = 2; // 顶边留白一行 + 上边框一行
+
+  if (clearScreen)
+    tui_clear(DEFAULT_COLOR);
+
+  print_window_size();
+  draw_border(1);
 
   for (int i = 0; i < lineCount; i++)
-    printCenterLine(lines[i] ? lines[i] : "");
+    draw_content_line(y++, lines[i] ? lines[i] : "");
 
-  printBorder();
-  putchar('\n');
-  fflush(stdout);
+  draw_border(y);
+  tui_flush();
 }
 
 static WORD getColorOf(int number) {
